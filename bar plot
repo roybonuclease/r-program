@@ -1,0 +1,32 @@
+CREATING A BAR PLOT
+
+# Step 1: Load and structure the data
+wt <- c(52.686, 56.821, 58.241, 58.752, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+het <- c(58.866, 60.944, 58.918, 61.549, 59.322, 61.14, 55.083, 62.703, 64.39, 67.653, 59.788, 61.506, 58.495)
+ko <- c(56.319, 58.114, 58.304, 67.191, 61.714, 53.13, 58.721, 63.327, 60.597, 63.66, NA, NA, NA)
+
+# Combine into a data frame
+data <- data.frame(
+  Genotype = rep(c("WT", "Het", "KO"), each = 13),
+  Value = c(wt, het, ko)
+)
+
+# Remove missing values
+data <- na.omit(data)
+
+# Step 2: Summary statistics
+summary_stats <- aggregate(Value ~ Genotype, data, function(x) c(mean = mean(x), sd = sd(x)))
+print("Summary Statistics:")
+print(summary_stats)
+
+# Perform ANOVA
+anova_result <- aov(Value ~ Genotype, data = data)
+summary(anova_result)
+
+# Step 3: Visualize with a beeswarm plot
+library(ggbeeswarm)
+ggplot(data, aes(x = Genotype, y = Value, color = Genotype)) +
+  geom_beeswarm(size = 3) +
+  labs(title = "Beeswarm Plot of Values by Genotype", x = "Genotype", y = "Value") +
+  theme_minimal()
+
